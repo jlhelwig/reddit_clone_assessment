@@ -9,7 +9,7 @@ router.route('/')
 })
 
 router.route('/')
-	.post((req, res) => {
+	.post(function(req, res){
 		knex('users')
 			.insert({
 				full_name: req.body.user.full_name,
@@ -17,15 +17,15 @@ router.route('/')
 				img_url: req.body.user.img_url
 			})
 			.returning('id')
-			.then((id) => {
+			.then(function(id){
 				res.redirect(`/users/${id}`);
 			});
 	})
-	.get((req, res) => {
+	.get(function(req, res) {
 	  knex('users')
 	    .select('id', 'username')
 			.orderBy('id', 'asc')
-	    .then((users) => {
+	    .then(function(users) {
 				// render the view engine template w/ users passed in
 	      res.render('users/index', {
 					// the users key & value are the same so this is {users: users}
@@ -33,8 +33,10 @@ router.route('/')
 	      });
 			});
 	});
-
-
+router.route('/new')
+    .get((req, res) => {
+        res.render('users/new');
+    });
 
 
 
