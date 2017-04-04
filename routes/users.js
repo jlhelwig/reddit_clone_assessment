@@ -3,7 +3,7 @@ var express = require("express");
 	knex = require("../db/knex")
 
 
-    router.route('/')
+router.route('/')
 	.post(function(req, res) {
 		knex('users')
 			.insert({
@@ -37,45 +37,76 @@ router.route("/new")
 	});
 
 // this handles a specific id route
-router.route("/:id")
-	.delete(function(req, res) {
-		knex('users')
-			.del()
-			.where({
-				id: req.params.id
-			})
-			.then(function() {
-				res.redirect(`/users`);
-			});
-	})
-	.get(function(req, res) {
-	  knex('users')
-	    .select('id', 'username', 'full_name', 'img_url')
-	    .where({ id: req.params.id })
-	    .first()
-	    .then(function(user) {
-				// this passes the user to the ejs template
-	      res.render('users/show', {
-	        user
-	      });
-	    });
-	})
-	.put(function(req, res) {
-	  knex('users')
-	    .update({
-	      full_name: req.body.user.full_name,
-	      username: req.body.user.username,
-	      img_url: req.body.user.img_url
-	    })
-	    .where({
-	      id: req.params.id
-	    })
-	    .then(function() {
-	      res.redirect(`/users/${req.params.id}`);
-	    });
-	});
+
+  router.route('/:id/edit')
+  	.get(function(req, res) {
+  	  knex('users')
+  	    .select('id', 'username', 'full_name', 'img_url')
+  	    .where({ id: req.params.id })
+        .first()
+  	    .then(function(user){
+  	      res.render('users/edit', {
+  	        user
+  	      });
+  	    });
+  	});
 
 
+  router.route("/:id")
+  	.get(function(req, res) {
+  	  knex('users')
+  	    .select('id', 'username', 'full_name', 'img_url')
+  	    .where({ id: req.params.id })
+  	    .first()
+  	    .then(function(user) {
+  				// this passes the user to the ejs template
+  	      res.render('users/show', {
+  	        user
+  	      });
+  	    });
+  	})
+  	.put(function(req, res) {
+  	  knex('users')
+  	    .update({
+  	      full_name: req.body.user.full_name,
+  	      username: req.body.user.username,
+  	      img_url: req.body.user.img_url
+  	    })
+  	    .where({
+  	      id: req.params.id
+  	    })
+  	    .then(function() {
+  	      res.redirect(`/users/${req.params.id}`);
+  	    })
+  	})
+
+// router.route('/:id')
+.delete(function(req, res) {
+  knex('users')
+  .first()
+  .where({
+    id: req.params.id
+  })
+  .del()
+  .then(function() {
+    res.redirect('/users');
+  });
+})
+router.route('/:id/delete')
+.get(function(req,res){
+  knex('users')
+  .select('id','username')
+  .where({
+    id: req.params.id
+  })
+  .first()
+  .then(function(user){
+    res.render('users/delete', {
+      user
+      // console.log(user);
+    });
+  });
+})
 
 
 
